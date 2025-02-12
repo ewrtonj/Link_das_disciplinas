@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links de Aulas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        input, button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input {
+            flex: 1;
+            min-width: 150px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            input, button {
+                width: 100%;
+            }
+            th, td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Links de Aulas e Classroom</h2>
+        <div class="input-group">
+            <input type="text" id="disciplina" placeholder="Nome da Disciplina">
+            <input type="text" id="linkAula" placeholder="Link da Aula">
+            <input type="text" id="linkClassroom" placeholder="Link do Classroom">
+            <button onclick="adicionarLink()">Adicionar</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Disciplina</th>
+                    <th>Link da Aula</th>
+                    <th>Link do Classroom</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="listaLinks"></tbody>
+        </table>
+    </div>
+    <script>
+        function carregarLinks() {
+            let links = JSON.parse(localStorage.getItem("links")) || [];
+            let lista = document.getElementById("listaLinks");
+            lista.innerHTML = "";
+            links.forEach((item, index) => {
+                let row = `<tr>
+                    <td>${item.disciplina}</td>
+                    <td><a href="${item.linkAula}" target="_blank">Acessar Aula</a></td>
+                    <td><a href="${item.linkClassroom}" target="_blank">Acessar Classroom</a></td>
+                    <td><button class='remove-btn' onclick="removerLink(${index})">Remover</button></td>
+                </tr>`;
+                lista.innerHTML += row;
+            });
+        }
+        
+        function adicionarLink() {
+            let disciplina = document.getElementById("disciplina").value.trim();
+            let linkAula = document.getElementById("linkAula").value.trim();
+            let linkClassroom = document.getElementById("linkClassroom").value.trim();
+            if (disciplina && linkAula && linkClassroom) {
+                let links = JSON.parse(localStorage.getItem("links")) || [];
+                links.push({ disciplina, linkAula, linkClassroom });
+                localStorage.setItem("links", JSON.stringify(links));
+                carregarLinks();
+                document.getElementById("disciplina").value = "";
+                document.getElementById("linkAula").value = "";
+                document.getElementById("linkClassroom").value = "";
+            } else {
+                alert("Preencha todos os campos!");
+            }
+        }
+        
+        function removerLink(index) {
+            let links = JSON.parse(localStorage.getItem("links")) || [];
+            links.splice(index, 1);
+            localStorage.setItem("links", JSON.stringify(links));
+            carregarLinks();
+        }
+        
+        document.addEventListener("DOMContentLoaded", carregarLinks);
+    </script>
+</body>
+</html>
